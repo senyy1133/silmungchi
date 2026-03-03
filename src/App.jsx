@@ -1,5 +1,7 @@
 import { useState, useRef, useEffect } from "react";
 
+const API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY;
+
 const SYSTEM_YARN = `당신은 코바늘 뜨개 전문가 AI 도우미 "실뭉치"예요. 사용자가 가진 실 정보를 바탕으로 작품을 추천하고 도안을 만들어줘요.
 
 대화 흐름:
@@ -168,7 +170,12 @@ export default function App() {
     try {
       const res=await fetch("https://api.anthropic.com/v1/messages",{
         method:"POST",
-        headers:{"Content-Type":"application/json"},
+        headers:{
+          "Content-Type":"application/json",
+          "x-api-key": API_KEY,
+          "anthropic-version": "2023-06-01",
+          "anthropic-dangerous-direct-browser-access": "true"
+        },
         body:JSON.stringify({
           model:"claude-sonnet-4-20250514",
           max_tokens:1000,
