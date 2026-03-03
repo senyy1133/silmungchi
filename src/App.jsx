@@ -2,96 +2,66 @@ import { useState, useRef, useEffect } from "react";
 
 const API_KEY = import.meta.env.VITE_ANTHROPIC_API_KEY;
 
-const SYSTEM_YARN = const SYSTEM_YARN = `당신은 코바늘 뜨개 전문가 AI 도우미 "실뭉치"예요.
+const SYSTEM_YARN = `당신은 코바늘 뜨개 전문가 AI 도우미 "실뭉치"예요.
 
-대화 흐름:
+규칙:
 1. 실 정보 질문 (굵기/호수, 색상, 양) — 한번에 1~2개만
 2. 작품 3가지 추천
-3. 선택 시 반드시 아래 포맷으로 도안 생성
+3. 선택 시 반드시 아래 포맷으로만 응답
 
-⚠️ 도안 생성 시 반드시 아래 포맷을 정확히 지켜야 해요. 절대 다른 형식 사용 금지!
-
----도안시작---
+도안 응답 시 포맷 (이 형식 외 절대 사용 금지):
+[PATTERN_START]
 작품명: xxx
 난이도: 초급
 완성크기: 약 Ncm
 바늘: 코바늘 N호
 사용실: xxx
-게이지: 짧은뜨기 10코×10단 = 약 4cm
+게이지: 짧은뜨기 10코x10단 = 약 4cm
 [기초코]
 사슬뜨기 N코
 [단별도안]
-1단: sc N [N코]
-2단: sc N [N코]
+1단: sc N (N코)
+2단: sc N (N코)
 [마무리]
 실 정리 방법
 [팁]
-- 초보자 팁
----도안끝---
+초보자 팁
+[PATTERN_END]
 
-⚠️ ---도안시작--- 과 ---도안끝--- 태그는 반드시 포함해야 해요!
-항상 따뜻하고 친근한 말투로!`;
+친근하고 따뜻한 말투로!`;
 
 const SYSTEM_PATTERN = `당신은 코바늘 뜨개 전문가 AI 도우미 "실뭉치"예요.
 
-대화 흐름:
+규칙:
 1. 세부사항 질문 (크기, 실 굵기/색상, 난이도) — 한번에 1~2개만
-2. 충분히 파악되면 반드시 아래 포맷으로 도안 생성
+2. 파악되면 반드시 아래 포맷으로만 응답
 
-⚠️ 도안 생성 시 반드시 아래 포맷을 정확히 지켜야 해요. 절대 다른 형식 사용 금지!
-
----도안시작---
+도안 응답 시 포맷 (이 형식 외 절대 사용 금지):
+[PATTERN_START]
 작품명: xxx
 난이도: 초급
 완성크기: 약 Ncm
 바늘: 코바늘 N호
 사용실: xxx
-게이지: 짧은뜨기 10코×10단 = 약 4cm
+게이지: 짧은뜨기 10코x10단 = 약 4cm
 [기초코]
 사슬뜨기 N코
 [단별도안]
-1단: sc N [N코]
-2단: sc N [N코]
+1단: sc N (N코)
+2단: sc N (N코)
 [마무리]
 실 정리 방법
 [팁]
-- 초보자 팁
----도안끝---
+초보자 팁
+[PATTERN_END]
 
-⚠️ ---도안시작--- 과 ---도안끝--- 태그는 반드시 포함해야 해요!
-항상 따뜻하고 친근한 말투로!`;
-
-const SYSTEM_PATTERN = `당신은 코바늘 뜨개 전문가 AI 도우미 "실뭉치"예요. 사용자가 원하는 작품을 설명하면 세부사항을 질문한 뒤 도안을 생성해줘요.
-
-대화 흐름:
-1. 세부사항 질문 (크기, 실 굵기/색상, 난이도, 용도) — 한번에 1~2개만
-2. 충분히 파악되면 도안 생성
-
-도안 포맷:
----도안시작---
-작품명: xxx
-난이도: 초급
-완성크기: 약 Ncm
-바늘: 코바늘 N호
-사용실: xxx
-게이지: 짧은뜨기 10코×10단 = 약 4cm
-[기초코]
-사슬뜨기 N코
-[단별도안]
-1단: sc N [N코]
-2단: sc N [N코]
-[마무리]
-실 정리 방법
-[팁]
-- 초보자 팁
----도안끝---
-항상 따뜻하고 친근한 말투로!`;
+친근하고 따뜻한 말투로!`;
 
 function parsePattern(text) {
-  const s = text.indexOf("---도안시작---");
-  const e = text.indexOf("---도안끝---");
+  const s = text.indexOf("[PATTERN_START]");
+  const e = text.indexOf("[PATTERN_END]");
   if (s === -1 || e === -1) return null;
-  return text.slice(s + 8, e).trim();
+  return text.slice(s + 15, e).trim();
 }
 
 function PatternCard({ raw }) {
@@ -151,7 +121,7 @@ function PatternCard({ raw }) {
 function Message({ m }) {
   const isUser = m.role==="user";
   const pattern = !isUser ? parsePattern(m.content) : null;
-  const text = pattern ? m.content.slice(0,m.content.indexOf("---도안시작---")).trim() : m.content;
+  const text = pattern ? m.content.slice(0,m.content.indexOf("[PATTERN_START]")).trim() : m.content;
   return (
     <div style={{display:"flex",flexDirection:isUser?"row-reverse":"row",gap:10,marginBottom:18,alignItems:"flex-start"}}>
       {!isUser && <div style={{width:36,height:36,borderRadius:"50%",background:"linear-gradient(135deg,#e8a87c,#c0704a)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1rem",flexShrink:0}}>🧶</div>}
@@ -210,7 +180,7 @@ export default function App() {
         },
         body:JSON.stringify({
           model:"claude-sonnet-4-20250514",
-          max_tokens:1000,
+          max_tokens:1500,
           system:mode==="yarn"?SYSTEM_YARN:SYSTEM_PATTERN,
           messages:newMsgs.map(m=>({role:m.role,content:m.content}))
         })
