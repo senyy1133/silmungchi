@@ -103,7 +103,7 @@ function PatternCard({ raw }) {
           </div>
           <div style={{background:"white",borderRadius:10,padding:"10px 14px",border:"1px solid #f0e0d0"}}>
             {sec.items.map((item,j) => {
-              const isRow = /^\d+단/.test(item);
+              const isRow = /^\d+[-~]?\d*단/.test(item);
               return (
                 <div key={j} style={{fontSize:"0.81rem",color:"#5C3D2E",padding:"4px 0",borderBottom:isRow&&j<sec.items.length-1?"1px solid #f5ede6":"none",display:"flex",gap:8,alignItems:"flex-start",lineHeight:1.6}}>
                   {isRow && <span style={{minWidth:32,background:"#fde8d8",color:"#c0704a",fontSize:"0.67rem",fontWeight:700,borderRadius:4,padding:"1px 4px",textAlign:"center",flexShrink:0,marginTop:2}}>{item.match(/^\d+단/)?.[0]}</span>}
