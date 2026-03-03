@@ -90,7 +90,7 @@ function PatternCard({ raw }) {
           {get("난이도") && <span style={{background:diffColor,color:"white",fontSize:"0.68rem",padding:"2px 10px",borderRadius:20,fontWeight:600}}>{get("난이도")}</span>}
         </div>
         <div style={{display:"flex",flexWrap:"wrap",gap:14}}>
-          {[["📏","완성크기"],["🪡","바늘"],["🧵","사용실"],["📐","게이지"]].map(([icon,key]) =>
+          {[["📏","완성크기"],["📍","바늘"],["🧵","사용실"],["📐","게이지"]].map(([icon,key]) =>
             get(key) ? <div key={key} style={{fontSize:"0.75rem",color:"#7a5c4a"}}>{icon} <span style={{color:"#aaa"}}>{key}:</span> <strong>{get(key)}</strong></div> : null
           )}
         </div>
@@ -200,7 +200,7 @@ export default function App() {
   if(!mode) return (
     <div style={{minHeight:"100vh",background:"linear-gradient(160deg,#fdf6f0 0%,#faeee4 50%,#f5e6d8 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"sans-serif",overflow:"hidden",position:"relative"}}>
       <style>{`@keyframes bounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-7px)}} @keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}} @keyframes floatBg{0%,100%{transform:translateY(0) rotate(-4deg)}50%{transform:translateY(-14px) rotate(4deg)}}`}</style>
-      {["🧶","🪡","✂️","🧵"].map((e,i)=>(
+      {["🧶","📍","✂️","🧵"].map((e,i)=>(
         <div key={i} style={{position:"absolute",fontSize:`${1.4+i*0.3}rem`,opacity:0.1,top:`${12+i*18}%`,left:i%2===0?`${4+i*4}%`:"auto",right:i%2!==0?`${4+i*4}%`:"auto",animation:`floatBg ${3.5+i*0.6}s ease-in-out infinite`,animationDelay:`${i*0.5}s`,pointerEvents:"none"}}>{e}</div>
       ))}
       <div style={{textAlign:"center",maxWidth:460,animation:"fadeUp .75s ease forwards"}}>
