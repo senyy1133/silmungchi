@@ -321,7 +321,7 @@ useEffect(() => {
         <div ref={bottomRef}/>
       </div>
       <div style={{padding:"12px 14px 18px",background:"white",borderTop:"1px solid #f0e0d0",boxShadow:"0 -4px 20px rgba(0,0,0,.05)",flexShrink:0}}>
-        <div style={{display:"flex",gap:8,alignItems:"flex-end",background:usageCount>=DAILY_LIMIT?"#FFF3E0":"#fdf6f0",borderRadius:14,border:`1.5px solid ${usageCount>=DAILY_LIMIT?"#FFB74D":"#e8d5c4"}`,padding:"9px 13px"}}>
+        <div style={{display:"flex",gap:8,alignItems:"center",background:usageCount>=DAILY_LIMIT?"#FFF3E0":"#fdf6f0",borderRadius:14,border:`1.5px solid ${usageCount>=DAILY_LIMIT?"#FFB74D":"#e8d5c4"}`,padding:"9px 13px"}}>
           <textarea ref={inputRef} value={input} onChange={e=>setInput(e.target.value)}
             onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}}}
             placeholder={mode==="yarn"?"가진 실에 대해 설명해주세요...":"만들고 싶은 작품을 설명해주세요..."}
