@@ -296,14 +296,12 @@ export default function App() {
           </div>
         </div>
         <div style={{display:"flex",alignItems:"center",gap:8}}>
-          <span style={{color:"rgba(255,255,255,.75)",fontSize:"0.68rem"}}>오늘 {usageCount}/{DAILY_LIMIT}회</span>
           <button onClick={reset} style={{background:"rgba(255,255,255,.18)",border:"1px solid rgba(255,255,255,.3)",borderRadius:8,color:"white",padding:"5px 13px",cursor:"pointer",fontSize:"0.75rem"}}
             onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.28)"}
             onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,.18)"}
           >← 처음으로</button>
         </div>
       </div>
-      <UsageWarning count={usageCount}/>
       <div style={{flex:1,overflowY:"auto",padding:"20px 16px"}}>
         {msgs.map((m,i)=><Message key={i} m={m}/>)}
         {loading&&<Typing/>}
@@ -313,8 +311,7 @@ export default function App() {
         <div style={{display:"flex",gap:8,alignItems:"flex-end",background:usageCount>=DAILY_LIMIT?"#FFF3E0":"#fdf6f0",borderRadius:14,border:`1.5px solid ${usageCount>=DAILY_LIMIT?"#FFB74D":"#e8d5c4"}`,padding:"9px 13px"}}>
           <textarea ref={inputRef} value={input} onChange={e=>setInput(e.target.value)}
             onKeyDown={e=>{if(e.key==="Enter"&&!e.shiftKey){e.preventDefault();send();}}}
-            placeholder={usageCount>=DAILY_LIMIT?"오늘 사용량 한도에 도달했어요 😢":mode==="yarn"?"가진 실에 대해 설명해주세요...":"만들고 싶은 작품을 설명해주세요..."}
-            disabled={usageCount>=DAILY_LIMIT}
+            placeholder={mode==="yarn"?"가진 실에 대해 설명해주세요...":"만들고 싶은 작품을 설명해주세요..."}
             rows={1} style={{flex:1,border:"none",background:"transparent",resize:"none",fontSize:"0.87rem",color:"#5C3D2E",lineHeight:1.55,fontFamily:"inherit",maxHeight:100,overflowY:"auto"}}
           />
           <button onClick={send} disabled={!input.trim()||loading||usageCount>=DAILY_LIMIT} style={{background:input.trim()&&!loading&&usageCount<DAILY_LIMIT?"linear-gradient(135deg,#c0704a,#a85a35)":"#e8d5c4",border:"none",borderRadius:10,width:37,height:37,cursor:input.trim()&&!loading&&usageCount<DAILY_LIMIT?"pointer":"default",display:"flex",alignItems:"center",justifyContent:"center",fontSize:"1.05rem",flexShrink:0,transition:"background .2s"}}
