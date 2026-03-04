@@ -193,9 +193,21 @@ export default function App() {
   }, [msgs, loading]);
 
   useEffect(() => {
-    try { localStorage.setItem("silmungchi_msgs", JSON.stringify(msgs)); }
-    catch {}
-  }, [msgs]);
+  try { localStorage.setItem("silmungchi_msgs", JSON.stringify(msgs)); }
+  catch {}
+}, [msgs]);
+
+useEffect(() => {
+  const handlePopState = () => {
+    setMode(null);
+    setMsgs([]);
+    setInput("");
+    localStorage.removeItem("silmungchi_msgs");
+    localStorage.removeItem("silmungchi_mode");
+  };
+  window.addEventListener("popstate", handlePopState);
+  return () => window.removeEventListener("popstate", handlePopState);
+}, []);
 
   const updateUsage = (count) => {
     const today = new Date().toDateString();
@@ -204,8 +216,9 @@ export default function App() {
   };
 
   const start = (m) => {
-    setMode(m);
-    localStorage.setItem("silmungchi_mode", m);
+  setMode(m);
+  localStorage.setItem("silmungchi_mode", m);
+  window.history.pushState({mode: m}, "");
     setMsgs([{role:"assistant", content: m==="yarn"
       ?"안녕하세요! 🧶 저는 코바늘 도우미 실뭉치예요.\n\n어떤 실을 갖고 계신가요? 실의 굵기(호수)와 색상을 알려주시면 딱 맞는 작품을 찾아드릴게요! 😊"
       :"안녕하세요! 🧶 저는 코바늘 도우미 실뭉치예요.\n\n어떤 작품을 만들고 싶으신가요? 자유롭게 설명해 주세요!\n\n예) '딸기 모양 코스터', '귀여운 곰 인형', '따뜻한 컵받침' 😊"
@@ -299,7 +312,7 @@ export default function App() {
           <button onClick={reset} style={{background:"rgba(255,255,255,.18)",border:"1px solid rgba(255,255,255,.3)",borderRadius:8,color:"white",padding:"5px 13px",cursor:"pointer",fontSize:"0.75rem"}}
             onMouseEnter={e=>e.currentTarget.style.background="rgba(255,255,255,.28)"}
             onMouseLeave={e=>e.currentTarget.style.background="rgba(255,255,255,.18)"}
-          >← 처음으로</button>
+          >← 나가기</button>
         </div>
       </div>
       <div style={{flex:1,overflowY:"auto",padding:"20px 16px"}}>
