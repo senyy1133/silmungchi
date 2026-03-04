@@ -10,8 +10,25 @@ export default async function handler(req, res) {
       return res.status(500).json({ error: 'API key not configured' });
     }
 
-    // keyPrefix 확인용 (확인 후 삭제할 예정)
-    return res.status(200).json({ keyPrefix: apiKey.slice(0, 15) });
+    let body;
+    try {
+      body = typeof req.body === 'string' ? JSON.parse(req.body) : req.body;
+    } catch {
+      return res.status(400).json({ error: 'Invalid request body' });
+    }
+
+    const response = await fetch('https://api.anthropic.com/v1/messages', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'x-api-key': apiKey,
+        'anthropic-version': '2023-06-01',
+      },
+      body: JSON.stringify(body)
+    });
+
+    const data = await response.json();
+    return res.status(response.status).json(data);
 
   } catch (e) {
     return res.status(500).json({ error: e.message });
