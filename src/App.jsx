@@ -144,17 +144,28 @@ function Typing() {
 }
 
 export default function App() {
-  const [mode,setMode]=useState(null);
-  const [msgs,setMsgs]=useState([]);
+  const [mode,setMode]=useState(()=>{
+  try { return localStorage.getItem("silmungchi_mode") || null; }
+  catch { return null; }
+});
+  const [msgs,setMsgs]=useState(()=>{
+  try {
+    const saved = localStorage.getItem("silmungchi_msgs");
+    return saved ? JSON.parse(saved) : [];
+  } catch { return []; }
+});
   const [input,setInput]=useState("");
   const [loading,setLoading]=useState(false);
   const bottomRef=useRef(null);
   const inputRef=useRef(null);
 
-  useEffect(()=>{bottomRef.current?.scrollIntoView({behavior:"smooth"})},[msgs,loading]);
+useEffect(()=>{
+  try { localStorage.setItem("silmungchi_msgs", JSON.stringify(msgs)); }
+  catch {}
+},[msgs]);
 
-  const start=(m)=>{
-    setMode(m);
+  setMode(m);
+  localStorage.setItem("silmungchi_mode", m);
     setMsgs([{role:"assistant",content:m==="yarn"
       ?"안녕하세요! 🧶 저는 코바늘 도우미 실뭉치예요.\n\n어떤 실을 갖고 계신가요? 실의 굵기(호수)와 색상을 알려주시면 딱 맞는 작품을 찾아드릴게요! 😊"
       :"안녕하세요! 🧶 저는 코바늘 도우미 실뭉치예요.\n\n어떤 작품을 만들고 싶으신가요? 자유롭게 설명해 주세요!\n\n예) '딸기 모양 코스터', '귀여운 곰 인형', '따뜻한 컵받침' 😊"
@@ -191,7 +202,13 @@ export default function App() {
     setTimeout(()=>inputRef.current?.focus(),100);
   };
 
-  const reset=()=>{setMode(null);setMsgs([]);setInput("");};
+  const reset=()=>{
+  setMode(null);
+  setMsgs([]);
+  setInput("");
+  localStorage.removeItem("silmungchi_msgs");
+  localStorage.removeItem("silmungchi_mode");
+};
 
   if(!mode) return (
     <div style={{minHeight:"100vh",background:"linear-gradient(160deg,#fdf6f0 0%,#faeee4 50%,#f5e6d8 100%)",display:"flex",flexDirection:"column",alignItems:"center",justifyContent:"center",padding:24,fontFamily:"sans-serif",overflow:"hidden",position:"relative"}}>
