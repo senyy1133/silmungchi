@@ -7,11 +7,13 @@ export default async function handler(req) {
 
   try {
     const body = await req.json();
+    const apiKey = process.env.ANTHROPIC_API_KEY;
+
     const response = await fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'x-api-key': process.env.ANTHROPIC_API_KEY,
+        'x-api-key': apiKey,
         'anthropic-version': '2023-06-01',
       },
       body: JSON.stringify(body)
@@ -19,11 +21,12 @@ export default async function handler(req) {
 
     const data = await response.json();
     return new Response(JSON.stringify(data), {
+      status: response.status,
       headers: { 'Content-Type': 'application/json' }
     });
 
   } catch (e) {
-    return new Response(JSON.stringify({ error: '서버 오류가 발생했어요.' }), {
+    return new Response(JSON.stringify({ error: e.message }), {
       status: 500,
       headers: { 'Content-Type': 'application/json' }
     });
